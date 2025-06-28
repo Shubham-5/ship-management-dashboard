@@ -6,6 +6,7 @@ import { useAuthStore } from './store/authStore';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ShipsPage from './pages/ShipsPage';
+import ShipDetailPage from './pages/ShipDetailPage';
 import Layout from './components/Layout';
 import './App.css';
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="ships" element={<ShipsPage />} />
+              <Route path="ships/:id" element={<ShipDetailPage />} />
             </Route>
           ) : (
             <Route path="*" element={<Navigate to="/login" />} />

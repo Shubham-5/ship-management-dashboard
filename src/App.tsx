@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ShipsPage from './pages/ShipsPage';
 import ShipDetailPage from './pages/ShipDetailPage';
+import JobsPage from './pages/JobsPage';
 import Layout from './components/Layout';
 import './App.css';
 
@@ -46,6 +47,7 @@ function App() {
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="ships" element={<ShipsPage />} />
               <Route path="ships/:id" element={<ShipDetailPage />} />
+              <Route path="jobs" element={<JobsPage />} />
             </Route>
           ) : (
             <Route path="*" element={<Navigate to="/login" />} />

@@ -1,18 +1,57 @@
-import './App.css'
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { useAuthStore } from './store/authStore';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import ShipsPage from './pages/ShipsPage';
+import Layout from './components/Layout';
+import './App.css';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
 function App() {
+  const { isAuthenticated, initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
   return (
-    <>
-      <div className="container">
-        <header>
-          <h1>Ship Management Dashboard</h1>
-          <p>Welcome to the ship maintenance system</p>
-        </header>
-        <main>
-        </main>
-      </div>
-    </>
-  )
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          <Route 
+            path="/login" 
+            element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} 
+          />
+          <Route 
+            path="/" 
+            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
+          />
+          {isAuthenticated ? (
+            <Route path="/" element={<Layout />}>
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="ships" element={<ShipsPage />} />
+            </Route>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" />} />
+          )}
+        </Routes>
+      </Router>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;

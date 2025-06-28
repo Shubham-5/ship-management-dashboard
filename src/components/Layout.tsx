@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   AppBar,
@@ -16,7 +16,8 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Divider
+  Divider,
+  Badge
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -29,6 +30,7 @@ import {
   Logout
 } from '@mui/icons-material';
 import { useAuthStore } from '../store/authStore';
+import { useNotificationStore } from '../store/notificationStore';
 
 const drawerWidth = 240;
 
@@ -36,8 +38,13 @@ const Layout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuthStore();
+  const { unreadCount, initializeNotifications } = useNotificationStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    initializeNotifications();
+  }, [initializeNotifications]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -55,6 +62,17 @@ const Layout: React.FC = () => {
     logout();
     navigate('/login');
     handleProfileMenuClose();
+  };
+
+  const getMenuIcon = (item: typeof menuItems[0]) => {
+    if (item.path === '/notifications') {
+      return (
+        <Badge badgeContent={unreadCount} color="error">
+          {item.icon}
+        </Badge>
+      );
+    }
+    return item.icon;
   };
 
   const menuItems = [
@@ -84,7 +102,7 @@ const Layout: React.FC = () => {
               }}
             >
               <ListItemIcon>
-                {item.icon}
+                {getMenuIcon(item)}
               </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
@@ -173,7 +191,7 @@ const Layout: React.FC = () => {
         <Toolbar />
         <Outlet />
       </Box>
-      
+
       <Menu
         anchorEl={anchorEl}
         id="profile-menu"

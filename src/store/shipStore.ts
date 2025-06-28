@@ -163,14 +163,46 @@ export const useShipStore = create<ShipState>((set, get) => ({
     const jobs = [...get().jobs, newJob];
     set({ jobs });
     saveToStorage(LOCAL_STORAGE_KEYS.JOBS, jobs);
+    
+    // Create notification for new job
+    try {
+      const ship = get().ships.find(s => s.id === jobData.shipId);
+      const component = get().components.find(c => c.id === jobData.componentId);
+      
+      if (ship && component) {
+        // We'll add notification creation here when the notification store is integrated
+        console.log(`New ${jobData.type} job created for ${component.name} on ${ship.name}`);
+      }
+    } catch (error) {
+      console.error('Error creating job notification:', error);
+    }
   },
 
   updateJob: (id, updates) => {
+    const oldJob = get().jobs.find(job => job.id === id);
     const jobs = get().jobs.map(job => 
       job.id === id ? { ...job, ...updates } : job
     );
     set({ jobs });
     saveToStorage(LOCAL_STORAGE_KEYS.JOBS, jobs);
+    
+    // Create notification for job update
+    try {
+      if (oldJob && (oldJob.status !== updates.status)) {
+        const ship = get().ships.find(s => s.id === oldJob.shipId);
+        const component = get().components.find(c => c.id === oldJob.componentId);
+        
+        if (ship && component) {
+          if (updates.status === 'Completed') {
+            console.log(`${oldJob.type} job completed for ${component.name} on ${ship.name}`);
+          } else {
+            console.log(`${oldJob.type} job updated for ${component.name} on ${ship.name}`);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error creating job update notification:', error);
+    }
   },
 
   deleteJob: (id) => {

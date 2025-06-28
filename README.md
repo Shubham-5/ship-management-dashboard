@@ -1,11 +1,52 @@
-# React + TypeScript + Vite
+# Ship Management Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based ship maintenance management system for ENTNT.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User authentication with role-based access (Admin, Inspector, Engineer)
+- Ship management (CRUD operations)
+- Component tracking and maintenance history
+- Job scheduling and status management
+- Maintenance calendar view
+- Real-time notifications
+- KPI dashboard with charts
+
+## Tech Stack
+
+- React 19 with TypeScript
+- Material-UI for components
+- React Hook Form for form handling
+- Zustand for state management
+- React Router for navigation
+- Local Storage for data persistence
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd ship-management-dashboard
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Start the development server
+```bash
+npm run dev
+```
+
+4. Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
 
 ## Expanding the ESLint configuration
 

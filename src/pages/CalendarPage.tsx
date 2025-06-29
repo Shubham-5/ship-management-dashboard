@@ -14,15 +14,21 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material';
 import {
   ChevronLeft,
   ChevronRight,
   Today,
-  Build
+  Build,
+  CalendarViewMonth,
+  CalendarViewWeek
 } from '@mui/icons-material';
 import { useShipStore, type MaintenanceJob } from '../store/shipStore';
+
+type CalendarView = 'month' | 'week';
 
 const CalendarPage: React.FC = () => {
   const { jobs, ships, components, initializeData } = useShipStore();
@@ -30,6 +36,7 @@ const CalendarPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedJobs, setSelectedJobs] = useState<MaintenanceJob[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [viewType, setViewType] = useState<CalendarView>('month');
 
   useEffect(() => {
     initializeData();
@@ -51,8 +58,10 @@ const CalendarPage: React.FC = () => {
     return jobs.filter(job => job.scheduledDate === date);
   };
 
-  const handleDateClick = (day: number) => {
-    const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+  const handleDateClick = (day: number, month?: number) => {
+    // Handle both monthly and weekly view clicks
+    const clickMonth = month !== undefined ? month : currentDate.getMonth();
+    const clickedDate = new Date(currentDate.getFullYear(), clickMonth, day);
     const dateString = formatDate(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate());
     const jobsForDate = getJobsForDate(dateString);
     
@@ -65,8 +74,41 @@ const CalendarPage: React.FC = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1));
   };
 
+  const navigateWeek = (direction: number) => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (direction * 7));
+    setCurrentDate(newDate);
+  };
+
+  const navigate = (direction: number) => {
+    if (viewType === 'month') {
+      navigateMonth(direction);
+    } else {
+      navigateWeek(direction);
+    }
+  };
+
   const goToToday = () => {
     setCurrentDate(new Date());
+  };
+
+  // Get the start of the week (Sunday) for a given date
+  const getWeekStart = (date: Date) => {
+    const start = new Date(date);
+    start.setDate(date.getDate() - date.getDay());
+    return start;
+  };
+
+  // Get array of dates for the current week
+  const getWeekDates = () => {
+    const weekStart = getWeekStart(currentDate);
+    const weekDates = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + i);
+      weekDates.push(date);
+    }
+    return weekDates;
   };
 
   const getPriorityColor = (priority: MaintenanceJob['priority']) => {
@@ -150,7 +192,6 @@ const CalendarPage: React.FC = () => {
 
     return days;
   };
-
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -158,53 +199,162 @@ const CalendarPage: React.FC = () => {
 
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  const renderWeeklyCalendar = () => {
+    const weekDates = getWeekDates();    
+    return (
+      <Box>
+        {/* Week header */}
+        <Box sx={{ display: 'flex', mb: 1 }}>
+          {dayNames.map((dayName) => (
+            <Box key={dayName} sx={{ width: '14.28%', p: 0.5 }}>
+              <Typography variant="subtitle2" textAlign="center" color="text.secondary">
+                {dayName}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+        
+        {/* Week days */}
+        <Box sx={{ display: 'flex' }}>
+          {weekDates.map((date, index) => {
+            const dateString = formatDate(date.getFullYear(), date.getMonth(), date.getDate());
+            const dayJobs = getJobsForDate(dateString);
+            const isToday = new Date().toDateString() === date.toDateString();
+            const isCurrentMonth = date.getMonth() === currentDate.getMonth();
+            
+            return (
+              <Box key={index} sx={{ width: '14.28%', p: 0.5 }}>
+                <Paper
+                  sx={{
+                    height: 200,
+                    p: 1,
+                    cursor: 'pointer',
+                    border: isToday ? '2px solid' : '1px solid',
+                    borderColor: isToday ? 'primary.main' : 'divider',
+                    backgroundColor: isCurrentMonth ? 'background.paper' : 'action.hover',
+                    '&:hover': {
+                      backgroundColor: 'action.selected'
+                    }
+                  }}
+                  onClick={() => handleDateClick(date.getDate(), date.getMonth())}
+                >
+                  <Typography 
+                    variant="body2" 
+                    fontWeight={isToday ? 'bold' : 'normal'}
+                    color={isCurrentMonth ? 'text.primary' : 'text.secondary'}
+                  >
+                    {date.getDate()}
+                  </Typography>
+                  <Box sx={{ mt: 1 }}>
+                    {dayJobs.map((job, jobIndex) => (
+                      <Chip
+                        key={jobIndex}
+                        label={`${job.type.substring(0, 4)}`}
+                        size="small"
+                        color={getPriorityColor(job.priority)}
+                        sx={{ 
+                          mb: 0.5, 
+                          mr: 0.5, 
+                          fontSize: '0.65rem',
+                          height: '20px',
+                          display: 'block',
+                          width: 'fit-content'
+                        }}
+                      />
+                    ))}
+                    {dayJobs.length > 4 && (
+                      <Typography variant="caption" color="text.secondary">
+                        +{dayJobs.length - 4} more
+                      </Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
+    );
+  };
+
+
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">Maintenance Calendar</Typography>
-        <Button
-          variant="outlined"
-          startIcon={<Today />}
-          onClick={goToToday}
-        >
-          Today
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          {/* View Toggle */}
+          <ToggleButtonGroup
+            value={viewType}
+            exclusive
+            onChange={(_, newView) => newView && setViewType(newView)}
+            size="small"
+          >
+            <ToggleButton value="month">
+              <CalendarViewMonth sx={{ mr: 1 }} />
+              Monthly
+            </ToggleButton>
+            <ToggleButton value="week">
+              <CalendarViewWeek sx={{ mr: 1 }} />
+              Weekly
+            </ToggleButton>
+          </ToggleButtonGroup>
+          
+          <Button
+            variant="outlined"
+            startIcon={<Today />}
+            onClick={goToToday}
+          >
+            Today
+          </Button>
+        </Box>
       </Box>
 
       <Card>
         <CardContent>
           {/* Calendar Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <IconButton onClick={() => navigateMonth(-1)}>
+            <IconButton onClick={() => navigate(-1)}>
               <ChevronLeft />
             </IconButton>
             <Typography variant="h5">
-              {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+              {viewType === 'month' 
+                ? `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`
+                : `Week of ${getWeekStart(currentDate).toLocaleDateString()}`
+              }
             </Typography>
-            <IconButton onClick={() => navigateMonth(1)}>
+            <IconButton onClick={() => navigate(1)}>
               <ChevronRight />
             </IconButton>
           </Box>
 
-          {/* Day Names Header */}
-          <Box sx={{ display: 'flex', mb: 1 }}>
-            {dayNames.map((dayName) => (
-              <Box key={dayName} sx={{ width: '14.28%', p: 0.5 }}>
-                <Typography
-                  variant="subtitle2"
-                  align="center"
-                  sx={{ fontWeight: 'bold', py: 1 }}
-                >
-                  {dayName}
-                </Typography>
+          {/* Calendar Content */}
+          {viewType === 'month' ? (
+            <>
+              {/* Day Names Header */}
+              <Box sx={{ display: 'flex', mb: 1 }}>
+                {dayNames.map((dayName) => (
+                  <Box key={dayName} sx={{ width: '14.28%', p: 0.5 }}>
+                    <Typography
+                      variant="subtitle2"
+                      align="center"
+                      sx={{ fontWeight: 'bold', py: 1 }}
+                    >
+                      {dayName}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
-            ))}
-          </Box>
 
-          {/* Calendar Grid */}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-            {renderCalendarDays()}
-          </Box>
+              {/* Monthly Calendar Grid */}
+              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                {renderCalendarDays()}
+              </Box>
+            </>
+          ) : (
+            /* Weekly Calendar */
+            renderWeeklyCalendar()
+          )}
         </CardContent>
       </Card>
 

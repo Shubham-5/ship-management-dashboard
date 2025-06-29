@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { LOCAL_STORAGE_KEYS, getFromStorage, saveToStorage } from '../utils/localStorage';
+import { useNotificationStore, createJobNotification } from './notificationStore';
 
 export interface Ship {
   id: string;
@@ -57,6 +58,7 @@ interface ShipState {
   deleteJob: (id: string) => void;
   getJobsByShipId: (shipId: string) => MaintenanceJob[];
   getJobsByStatus: (status: MaintenanceJob['status']) => MaintenanceJob[];
+  checkOverdueJobs: () => void;
   
   initializeData: () => void;
 }
@@ -108,14 +110,50 @@ export const useShipStore = create<ShipState>((set, get) => ({
     const ships = [...get().ships, newShip];
     set({ ships });
     saveToStorage(LOCAL_STORAGE_KEYS.SHIPS, ships);
+    
+    // Create notification for new ship
+    try {
+      const notificationStore = useNotificationStore.getState();
+      notificationStore.addNotification({
+        type: 'system',
+        title: 'New Ship Added',
+        message: `Ship "${newShip.name}" has been added to the fleet`,
+        priority: 'medium',
+        relatedEntityId: newShip.id,
+        relatedEntityType: 'ship'
+      });
+    } catch (error) {
+      console.error('Error creating ship notification:', error);
+    }
   },
 
   updateShip: (id, updates) => {
+    const oldShip = get().ships.find(ship => ship.id === id);
     const ships = get().ships.map(ship => 
       ship.id === id ? { ...ship, ...updates } : ship
     );
     set({ ships });
     saveToStorage(LOCAL_STORAGE_KEYS.SHIPS, ships);
+    
+    // Create notification for ship status changes
+    try {
+      if (oldShip && oldShip.status !== updates.status && updates.status) {
+        const notificationStore = useNotificationStore.getState();
+        const updatedShip = ships.find(s => s.id === id);
+        if (updatedShip) {
+          notificationStore.addNotification({
+            type: 'system',
+            title: 'Ship Status Updated',
+            message: `Ship "${updatedShip.name}" status changed from ${oldShip.status} to ${updates.status}`,
+            priority: updates.status === 'Under Maintenance' ? 'high' : 'medium',
+            relatedEntityId: updatedShip.id,
+            relatedEntityType: 'ship'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error creating ship update notification:', error);
+    }
   },
 
   deleteShip: (id) => {
@@ -170,8 +208,17 @@ export const useShipStore = create<ShipState>((set, get) => ({
       const component = get().components.find(c => c.id === jobData.componentId);
       
       if (ship && component) {
-        // We'll add notification creation here when the notification store is integrated
-        console.log(`New ${jobData.type} job created for ${component.name} on ${ship.name}`);
+        // Access notification store and add notification
+        const notificationStore = useNotificationStore.getState();
+        const notification = createJobNotification(
+          'job_created',
+          jobData.type,
+          ship.name,
+          component.name,
+          newJob.id,
+          jobData.priority as 'low' | 'medium' | 'high' | 'critical'
+        );
+        notificationStore.addNotification(notification);
       }
     } catch (error) {
       console.error('Error creating job notification:', error);
@@ -193,10 +240,28 @@ export const useShipStore = create<ShipState>((set, get) => ({
         const component = get().components.find(c => c.id === oldJob.componentId);
         
         if (ship && component) {
+          const notificationStore = useNotificationStore.getState();
+          
           if (updates.status === 'Completed') {
-            console.log(`${oldJob.type} job completed for ${component.name} on ${ship.name}`);
+            const notification = createJobNotification(
+              'job_completed',
+              oldJob.type,
+              ship.name,
+              component.name,
+              oldJob.id,
+              oldJob.priority as 'low' | 'medium' | 'high' | 'critical'
+            );
+            notificationStore.addNotification(notification);
           } else {
-            console.log(`${oldJob.type} job updated for ${component.name} on ${ship.name}`);
+            const notification = createJobNotification(
+              'job_updated',
+              oldJob.type,
+              ship.name,
+              component.name,
+              oldJob.id,
+              oldJob.priority as 'low' | 'medium' | 'high' | 'critical'
+            );
+            notificationStore.addNotification(notification);
           }
         }
       }
@@ -224,5 +289,44 @@ export const useShipStore = create<ShipState>((set, get) => ({
     const components = getFromStorage(LOCAL_STORAGE_KEYS.COMPONENTS) || [];
     const jobs = getFromStorage(LOCAL_STORAGE_KEYS.JOBS) || [];
     set({ ships, components, jobs });
-  }
+  },
+
+  // Check for overdue jobs and create notifications
+  checkOverdueJobs: () => {
+    try {
+      const now = new Date();
+      const overdueJobs = get().jobs.filter(job => {
+        if (job.status === 'Completed' || job.status === 'Cancelled') return false;
+        const scheduledDate = new Date(job.scheduledDate);
+        return scheduledDate < now;
+      });
+
+      const notificationStore = useNotificationStore.getState();
+      
+      overdueJobs.forEach(job => {
+        const ship = get().ships.find(s => s.id === job.shipId);
+        const component = get().components.find(c => c.id === job.componentId);
+        
+        if (ship && component) {
+          // Check if we already have a notification for this overdue job
+          const existingNotification = notificationStore.notifications.find(
+            n => n.relatedEntityId === job.id && n.type === 'maintenance_overdue'
+          );
+          
+          if (!existingNotification) {
+            notificationStore.addNotification({
+              type: 'maintenance_overdue',
+              title: 'Maintenance Job Overdue',
+              message: `${job.type} job for ${component.name} on ${ship.name} is overdue`,
+              priority: 'high',
+              relatedEntityId: job.id,
+              relatedEntityType: 'job'
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error checking overdue jobs:', error);
+    }
+  },
 }));

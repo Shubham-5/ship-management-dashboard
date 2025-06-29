@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import { useAuthStore } from '../store/authStore';
 import { useNotificationStore } from '../store/notificationStore';
+import { useShipStore } from '../store/shipStore';
 
 const drawerWidth = 240;
 
@@ -39,12 +40,22 @@ const Layout: React.FC = () => {
   const location = useLocation();
   const { user, logout } = useAuthStore();
   const { unreadCount, initializeNotifications } = useNotificationStore();
+  const { checkOverdueJobs } = useShipStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     initializeNotifications();
-  }, [initializeNotifications]);
+    // Check for overdue jobs when the layout loads
+    checkOverdueJobs();
+    
+    // Set up interval to check for overdue jobs every 30 minutes
+    const interval = setInterval(() => {
+      checkOverdueJobs();
+    }, 30 * 60 * 1000);
+    
+    return () => clearInterval(interval);
+  }, [initializeNotifications, checkOverdueJobs]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

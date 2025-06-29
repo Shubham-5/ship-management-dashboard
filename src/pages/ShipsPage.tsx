@@ -125,74 +125,245 @@ const ShipsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">Ships Management</Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-        >
-          Add Ship
-        </Button>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Header Section */}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box>
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                fontWeight: 800, 
+                color: '#0f172a',
+                mb: 1,
+                fontSize: { xs: '2rem', sm: '2.5rem' },
+                letterSpacing: '-0.025em',
+              }}
+            >
+              Fleet Management
+            </Typography>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                color: '#64748b',
+                fontWeight: 400,
+                fontSize: '1.125rem',
+              }}
+            >
+              Manage your vessel fleet and operational status
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenDialog()}
+            sx={{
+              backgroundColor: '#3b82f6',
+              color: '#ffffff',
+              fontWeight: 600,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              '&:hover': {
+                backgroundColor: '#2563eb',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            Add New Ship
+          </Button>
+        </Box>
       </Box>
 
-      <Card>
-        <CardContent>
-          <TableContainer>
-            <Table>
+      <Card sx={{ 
+        flex: 1, 
+        display: 'flex', 
+        flexDirection: 'column',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        borderRadius: 2,
+      }}>
+        <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 0 }}>
+          <TableContainer sx={{ 
+            flex: 1,
+            '&::-webkit-scrollbar': {
+              width: '6px',
+              height: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: '#f1f5f9',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#cbd5e1',
+              borderRadius: '3px',
+              '&:hover': {
+                backgroundColor: '#94a3b8',
+              },
+            },
+          }}>
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>IMO Number</TableCell>
-                  <TableCell>Flag</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Year Built</TableCell>
-                  <TableCell>Owner</TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                  }}>
+                    Ship Name
+                  </TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                  }}>
+                    IMO Number
+                  </TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                  }}>
+                    Flag
+                  </TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                  }}>
+                    Status
+                  </TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                  }}>
+                    Year Built
+                  </TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                  }}>
+                    Owner
+                  </TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    textAlign: 'center',
+                  }}>
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {ships.map((ship) => (
-                  <TableRow key={ship.id} hover>
-                    <TableCell>
-                      <Typography variant="body1" fontWeight="medium">
+                {ships.map((ship, index) => (
+                  <TableRow 
+                    key={ship.id} 
+                    hover
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#f8fafc',
+                      },
+                      backgroundColor: index % 2 === 0 ? '#ffffff' : '#fafbfc',
+                    }}
+                  >
+                    <TableCell sx={{ py: 2.5 }}>
+                      <Typography variant="body1" fontWeight="600" sx={{ color: '#0f172a' }}>
                         {ship.name}
                       </Typography>
+                      {ship.description && (
+                        <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
+                          {ship.description}
+                        </Typography>
+                      )}
                     </TableCell>
-                    <TableCell>{ship.imo}</TableCell>
-                    <TableCell>{ship.flag}</TableCell>
-                    <TableCell>
+                    <TableCell sx={{ py: 2.5 }}>
+                      <Typography variant="body2" sx={{ fontFamily: 'monospace', color: '#374151' }}>
+                        {ship.imo}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2.5 }}>
+                      <Typography variant="body2" sx={{ color: '#374151', fontWeight: 500 }}>
+                        {ship.flag}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2.5 }}>
                       <Chip
                         label={ship.status}
                         color={getStatusColor(ship.status)}
                         size="small"
+                        sx={{ fontWeight: 500 }}
                       />
                     </TableCell>
-                    <TableCell>{ship.yearBuilt || 'N/A'}</TableCell>
-                    <TableCell>{ship.owner || 'N/A'}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        onClick={() => navigate(`/ships/${ship.id}`)}
-                        color="primary"
-                        size="small"
-                      >
-                        <Visibility />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleOpenDialog(ship)}
-                        color="primary"
-                        size="small"
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(ship)}
-                        color="error"
-                        size="small"
-                      >
-                        <Delete />
-                      </IconButton>
+                    <TableCell sx={{ py: 2.5 }}>
+                      <Typography variant="body2" sx={{ color: '#374151' }}>
+                        {ship.yearBuilt || 'N/A'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2.5 }}>
+                      <Typography variant="body2" sx={{ color: '#374151' }}>
+                        {ship.owner || 'N/A'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center" sx={{ py: 2.5 }}>
+                      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                        <IconButton
+                          onClick={() => navigate(`/ships/${ship.id}`)}
+                          color="primary"
+                          size="small"
+                          sx={{
+                            backgroundColor: '#eff6ff',
+                            '&:hover': {
+                              backgroundColor: '#dbeafe',
+                            },
+                          }}
+                        >
+                          <Visibility />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleOpenDialog(ship)}
+                          color="primary"
+                          size="small"
+                          sx={{
+                            backgroundColor: '#fef3c7',
+                            '&:hover': {
+                              backgroundColor: '#fde68a',
+                            },
+                          }}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteClick(ship)}
+                          color="error"
+                          size="small"
+                          sx={{
+                            backgroundColor: '#fef2f2',
+                            '&:hover': {
+                              backgroundColor: '#fecaca',
+                            },
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ))}

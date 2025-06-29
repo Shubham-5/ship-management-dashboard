@@ -201,32 +201,86 @@ const JobsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">Maintenance Jobs</Typography>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-        >
-          Create Job
-        </Button>
+    <Box sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column',
+      minHeight: 0, // Important for proper flex behavior
+      overflow: 'hidden', // Prevent main container from scrolling
+    }}>
+      {/* Header Section */}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box>
+            <Typography 
+              variant="h3" 
+              sx={{ 
+                fontWeight: 800, 
+                color: '#0f172a',
+                mb: 1,
+                fontSize: { xs: '2rem', sm: '2.5rem' },
+                letterSpacing: '-0.025em',
+              }}
+            >
+              Maintenance Jobs
+            </Typography>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                color: '#64748b',
+                fontWeight: 400,
+                fontSize: '1.125rem',
+              }}
+            >
+              Track and manage all maintenance activities across your fleet
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => handleOpenDialog()}
+            sx={{
+              backgroundColor: '#3b82f6',
+              color: '#ffffff',
+              fontWeight: 600,
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              '&:hover': {
+                backgroundColor: '#2563eb',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            Create New Job
+          </Button>
+        </Box>
       </Box>
 
       {/* Filters */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <FilterList sx={{ mr: 1 }} />
-            <Typography variant="h6">Filters</Typography>
+      <Card sx={{ 
+        mb: 3,
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        borderRadius: 2,
+      }}>
+        <CardContent sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <FilterList sx={{ mr: 2, color: '#3b82f6' }} />
+            <Typography variant="h6" sx={{ fontWeight: 600, color: '#0f172a' }}>
+              Filter Jobs
+            </Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-            <FormControl sx={{ minWidth: 200 }}>
+          <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap', alignItems: 'center' }}>
+            <FormControl sx={{ minWidth: 220 }}>
               <InputLabel>Ship</InputLabel>
               <Select
                 value={filters.shipId}
                 label="Ship"
                 onChange={handleFilterChange('shipId')}
+                sx={{ borderRadius: 1.5 }}
               >
                 <MenuItem value="">All Ships</MenuItem>
                 {ships.map((ship) => (
@@ -236,12 +290,13 @@ const JobsPage: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-            <FormControl sx={{ minWidth: 150 }}>
+            <FormControl sx={{ minWidth: 160 }}>
               <InputLabel>Status</InputLabel>
               <Select
                 value={filters.status}
                 label="Status"
                 onChange={handleFilterChange('status')}
+                sx={{ borderRadius: 1.5 }}
               >
                 <MenuItem value="">All Status</MenuItem>
                 <MenuItem value="Open">Open</MenuItem>
@@ -250,12 +305,13 @@ const JobsPage: React.FC = () => {
                 <MenuItem value="Cancelled">Cancelled</MenuItem>
               </Select>
             </FormControl>
-            <FormControl sx={{ minWidth: 150 }}>
+            <FormControl sx={{ minWidth: 160 }}>
               <InputLabel>Priority</InputLabel>
               <Select
                 value={filters.priority}
                 label="Priority"
                 onChange={handleFilterChange('priority')}
+                sx={{ borderRadius: 1.5 }}
               >
                 <MenuItem value="">All Priority</MenuItem>
                 <MenuItem value="Low">Low</MenuItem>
@@ -264,7 +320,22 @@ const JobsPage: React.FC = () => {
                 <MenuItem value="Critical">Critical</MenuItem>
               </Select>
             </FormControl>
-            <Button onClick={clearFilters} variant="outlined">
+            <Button 
+              onClick={clearFilters} 
+              variant="outlined"
+              sx={{
+                borderColor: '#e2e8f0',
+                color: '#475569',
+                fontWeight: 500,
+                px: 3,
+                py: 1.5,
+                borderRadius: 1.5,
+                '&:hover': {
+                  backgroundColor: '#f8fafc',
+                  borderColor: '#cbd5e1',
+                },
+              }}
+            >
               Clear Filters
             </Button>
           </Box>
@@ -272,69 +343,232 @@ const JobsPage: React.FC = () => {
       </Card>
 
       {/* Jobs Table */}
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Jobs ({filteredJobs.length})
-          </Typography>
-          <TableContainer>
-            <Table>
+      <Card sx={{ 
+        flex: 1, 
+        display: 'flex', 
+        flexDirection: 'column',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        borderRadius: 2,
+        minHeight: 0, // Important for flex container
+      }}>
+        <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 0, minHeight: 0 }}>
+          <Box sx={{ p: 3, borderBottom: '1px solid #e2e8f0', flexShrink: 0 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#0f172a' }}>
+                Maintenance Jobs ({filteredJobs.length})
+              </Typography>
+              {filteredJobs.length === 0 && (
+                <Typography variant="body2" sx={{ color: '#64748b' }}>
+                  No jobs match the current filters
+                </Typography>
+              )}
+            </Box>
+          </Box>
+          <TableContainer sx={{ 
+            flex: 1,
+            overflow: 'auto',
+            minHeight: '40vh', // Minimum height to show more jobs
+            maxHeight: 'calc(100vh - 400px)', // Ensure there's enough space
+            '&::-webkit-scrollbar': {
+              width: '6px',
+              height: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: '#f1f5f9',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#cbd5e1',
+              borderRadius: '3px',
+              '&:hover': {
+                backgroundColor: '#94a3b8',
+              },
+            },
+          }}>
+            <Table stickyHeader sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow>
-                  <TableCell>Ship</TableCell>
-                  <TableCell>Component</TableCell>
-                  <TableCell>Type</TableCell>
-                  <TableCell>Priority</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Scheduled Date</TableCell>
-                  <TableCell>Assigned Engineer</TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Ship</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Component</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Type</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Priority</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Status</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Scheduled Date</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Engineer</TableCell>
+                  <TableCell sx={{ 
+                    backgroundColor: '#f8fafc',
+                    fontWeight: 600,
+                    color: '#374151',
+                    borderBottom: '2px solid #e2e8f0',
+                    py: 2,
+                    textAlign: 'center',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                  }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredJobs.map((job) => (
-                  <TableRow key={job.id} hover>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="medium">
-                        {getShipName(job.shipId)}
+                {filteredJobs.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} sx={{ textAlign: 'center', py: 6 }}>
+                      <Typography variant="body1" sx={{ color: '#64748b', mb: 1 }}>
+                        No maintenance jobs found
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#9ca3af' }}>
+                        {jobs.length === 0 
+                          ? 'Create your first maintenance job using the "Create New Job" button above.'
+                          : 'Try adjusting your filters to see more jobs.'
+                        }
                       </Typography>
                     </TableCell>
-                    <TableCell>{getComponentName(job.componentId)}</TableCell>
-                    <TableCell>{job.type}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={job.priority}
-                        color={getPriorityColor(job.priority)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={job.status}
-                        color={getStatusColor(job.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>{new Date(job.scheduledDate).toLocaleDateString()}</TableCell>
-                    <TableCell>Engineer #{job.assignedEngineerId}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        onClick={() => handleOpenDialog(job)}
-                        color="primary"
-                        size="small"
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(job)}
-                        color="error"
-                        size="small"
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  filteredJobs.map((job, index) => (
+                    <TableRow 
+                      key={job.id} 
+                      hover
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: '#f8fafc',
+                        },
+                        backgroundColor: index % 2 === 0 ? '#ffffff' : '#fafbfc',
+                      }}
+                    >
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Typography variant="body2" fontWeight="600" sx={{ color: '#0f172a' }}>
+                          {getShipName(job.shipId)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Typography variant="body2" sx={{ color: '#374151' }}>
+                          {getComponentName(job.componentId)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Typography variant="body2" sx={{ color: '#374151' }}>
+                          {job.type}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Chip
+                          label={job.priority}
+                          color={getPriorityColor(job.priority)}
+                          size="small"
+                          sx={{ fontWeight: 500 }}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Chip
+                          label={job.status}
+                          color={getStatusColor(job.status)}
+                          size="small"
+                          sx={{ fontWeight: 500 }}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Typography variant="body2" sx={{ color: '#374151' }}>
+                          {new Date(job.scheduledDate).toLocaleDateString()}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ py: 2.5 }}>
+                        <Typography variant="body2" sx={{ color: '#374151' }}>
+                          Engineer #{job.assignedEngineerId}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="center" sx={{ py: 2.5 }}>
+                        <IconButton
+                          onClick={() => handleOpenDialog(job)}
+                          sx={{
+                            color: '#3b82f6',
+                            '&:hover': {
+                              backgroundColor: '#eff6ff',
+                            },
+                            mr: 1,
+                          }}
+                          size="small"
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteClick(job)}
+                          sx={{
+                            color: '#dc2626',
+                            '&:hover': {
+                              backgroundColor: '#fef2f2',
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>

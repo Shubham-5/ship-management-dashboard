@@ -133,75 +133,169 @@ const NotificationsPage: React.FC = () => {
   const filteredNotifications = getFilteredNotifications();
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography variant="h4" sx={{ mr: 2 }}>
-            Notifications
-          </Typography>
-          <Badge badgeContent={unreadCount} color="error">
-            <Notifications />
-          </Badge>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            variant="outlined"
-            startIcon={<DoneAll />}
-            onClick={markAllAsRead}
-            disabled={unreadCount === 0}
-          >
-            Mark All Read
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<Clear />}
-            onClick={() => setClearConfirmOpen(true)}
-            disabled={notifications.length === 0}
-          >
-            Clear All
-          </Button>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Header Section */}
+      <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Box>
+              <Typography 
+                variant="h3" 
+                sx={{ 
+                  fontWeight: 800, 
+                  color: '#0f172a',
+                  mb: 1,
+                  fontSize: { xs: '2rem', sm: '2.5rem' },
+                  letterSpacing: '-0.025em',
+                }}
+              >
+                Notifications
+              </Typography>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  color: '#64748b',
+                  fontWeight: 400,
+                  fontSize: '1.125rem',
+                }}
+              >
+                Stay updated with all system alerts and maintenance updates
+              </Typography>
+            </Box>
+            <Badge 
+              badgeContent={unreadCount} 
+              color="error"
+              sx={{
+                '& .MuiBadge-badge': {
+                  backgroundColor: '#ef4444',
+                  color: '#ffffff',
+                  fontWeight: 600,
+                },
+              }}
+            >
+              <Box sx={{
+                p: 2,
+                borderRadius: 2,
+                backgroundColor: '#eff6ff',
+                color: '#3b82f6',
+              }}>
+                <Notifications sx={{ fontSize: 24 }} />
+              </Box>
+            </Badge>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<DoneAll />}
+              onClick={markAllAsRead}
+              disabled={unreadCount === 0}
+              sx={{
+                borderColor: '#e2e8f0',
+                color: '#475569',
+                fontWeight: 500,
+                px: 3,
+                py: 1,
+                borderRadius: 1.5,
+                '&:hover': {
+                  backgroundColor: '#f8fafc',
+                  borderColor: '#cbd5e1',
+                },
+                '&:disabled': {
+                  borderColor: '#f1f5f9',
+                  color: '#cbd5e1',
+                },
+              }}
+            >
+              Mark All Read
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<Clear />}
+              onClick={() => setClearConfirmOpen(true)}
+              disabled={notifications.length === 0}
+              sx={{
+                borderColor: '#fecaca',
+                color: '#dc2626',
+                fontWeight: 500,
+                px: 3,
+                py: 1,
+                borderRadius: 1.5,
+                '&:hover': {
+                  backgroundColor: '#fef2f2',
+                  borderColor: '#f87171',
+                },
+                '&:disabled': {
+                  borderColor: '#f1f5f9',
+                  color: '#cbd5e1',
+                },
+              }}
+            >
+              Clear All
+            </Button>
+          </Box>
         </Box>
       </Box>
 
       {/* Summary Cards */}
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
-        <Card sx={{ flex: '1 1 200px' }}>
-          <CardContent sx={{ textAlign: 'center' }}>
-            <Typography variant="h4" color="primary.main">
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+        gap: 3, 
+        mb: 4 
+      }}>
+        <Card sx={{ 
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          borderRadius: 2,
+        }}>
+          <CardContent sx={{ textAlign: 'center', p: 3 }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, color: '#3b82f6', mb: 1 }}>
               {notifications.length}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
               Total Notifications
             </Typography>
           </CardContent>
         </Card>
-        <Card sx={{ flex: '1 1 200px' }}>
-          <CardContent sx={{ textAlign: 'center' }}>
-            <Typography variant="h4" color="error.main">
+        <Card sx={{ 
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          borderRadius: 2,
+        }}>
+          <CardContent sx={{ textAlign: 'center', p: 3 }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, color: '#ef4444', mb: 1 }}>
               {unreadCount}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
               Unread
             </Typography>
           </CardContent>
         </Card>
-        <Card sx={{ flex: '1 1 200px' }}>
-          <CardContent sx={{ textAlign: 'center' }}>
-            <Typography variant="h4" color="warning.main">
+        <Card sx={{ 
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          borderRadius: 2,
+        }}>
+          <CardContent sx={{ textAlign: 'center', p: 3 }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, color: '#f59e0b', mb: 1 }}>
               {notifications.filter(n => n.priority === 'critical' || n.priority === 'high').length}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
               High Priority
             </Typography>
           </CardContent>
         </Card>
-        <Card sx={{ flex: '1 1 200px' }}>
-          <CardContent sx={{ textAlign: 'center' }}>
-            <Typography variant="h4" color="info.main">
+        <Card sx={{ 
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+          borderRadius: 2,
+        }}>
+          <CardContent sx={{ textAlign: 'center', p: 3 }}>
+            <Typography variant="h3" sx={{ fontWeight: 700, color: '#06b6d4', mb: 1 }}>
               {notifications.filter(n => n.type === 'maintenance_overdue').length}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: '#64748b', fontWeight: 500 }}>
               Maintenance Alerts
             </Typography>
           </CardContent>

@@ -6,9 +6,6 @@ import {
   Typography,
   Button,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
   Chip,
   IconButton,
   Dialog,
@@ -140,7 +137,15 @@ const CalendarPage: React.FC = () => {
     for (let i = 0; i < firstDay; i++) {
       days.push(
         <Box key={`empty-${i}`} sx={{ width: '14.28%', p: 0.5 }}>
-          <Paper sx={{ height: 120, p: 1 }} variant="outlined" />
+          <Paper 
+            sx={{ 
+              height: 140, 
+              p: 2,
+              backgroundColor: '#f8fafc',
+              border: '1px solid #f1f5f9',
+            }} 
+            elevation={0}
+          />
         </Box>
       );
     }
@@ -155,32 +160,62 @@ const CalendarPage: React.FC = () => {
         <Box key={day} sx={{ width: '14.28%', p: 0.5 }}>
           <Paper
             sx={{
-              height: 120,
-              p: 1,
+              height: 140,
+              p: 2,
               cursor: 'pointer',
-              border: isToday ? '2px solid' : '1px solid',
-              borderColor: isToday ? 'primary.main' : 'divider',
+              border: isToday ? '2px solid #3b82f6' : '1px solid #e2e8f0',
+              borderRadius: 2,
+              backgroundColor: isToday ? '#eff6ff' : '#ffffff',
+              transition: 'all 0.2s ease-in-out',
               '&:hover': {
-                backgroundColor: 'action.hover'
+                backgroundColor: '#f8fafc',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                transform: 'translateY(-1px)',
               }
             }}
+            elevation={0}
             onClick={() => handleDateClick(day)}
           >
-            <Typography variant="body2" fontWeight={isToday ? 'bold' : 'normal'}>
+            <Typography 
+              variant="body1" 
+              fontWeight={isToday ? 700 : 600}
+              sx={{ 
+                mb: 1,
+                color: isToday ? '#1e40af' : '#374151',
+                fontSize: '0.875rem',
+              }}
+            >
               {day}
             </Typography>
-            <Box sx={{ mt: 1 }}>
+            <Box>
               {dayJobs.slice(0, 2).map((job, index) => (
                 <Chip
                   key={index}
-                  label={job.type}
+                  label={job.type.length > 8 ? job.type.substring(0, 8) + '...' : job.type}
                   size="small"
                   color={getPriorityColor(job.priority)}
-                  sx={{ mb: 0.5, mr: 0.5, fontSize: '0.7rem' }}
+                  sx={{ 
+                    mb: 0.5, 
+                    mr: 0.5, 
+                    fontSize: '0.65rem',
+                    height: '20px',
+                    '& .MuiChip-label': {
+                      px: 1,
+                    },
+                  }}
                 />
               ))}
               {dayJobs.length > 2 && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: '#6b7280',
+                    fontSize: '0.7rem',
+                    fontWeight: 500,
+                    display: 'block',
+                    mt: 0.5,
+                  }}
+                >
                   +{dayJobs.length - 2} more
                 </Typography>
               )}
@@ -204,10 +239,20 @@ const CalendarPage: React.FC = () => {
     return (
       <Box>
         {/* Week header */}
-        <Box sx={{ display: 'flex', mb: 1 }}>
+        <Box sx={{ display: 'flex', mb: 2 }}>
           {dayNames.map((dayName) => (
-            <Box key={dayName} sx={{ width: '14.28%', p: 0.5 }}>
-              <Typography variant="subtitle2" textAlign="center" color="text.secondary">
+            <Box key={dayName} sx={{ width: '14.28%', p: 1 }}>
+              <Typography 
+                variant="subtitle2" 
+                textAlign="center" 
+                sx={{ 
+                  fontWeight: 600, 
+                  color: '#64748b',
+                  fontSize: '0.75rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
                 {dayName}
               </Typography>
             </Box>
@@ -226,44 +271,64 @@ const CalendarPage: React.FC = () => {
               <Box key={index} sx={{ width: '14.28%', p: 0.5 }}>
                 <Paper
                   sx={{
-                    height: 200,
-                    p: 1,
+                    height: 240,
+                    p: 2,
                     cursor: 'pointer',
-                    border: isToday ? '2px solid' : '1px solid',
-                    borderColor: isToday ? 'primary.main' : 'divider',
-                    backgroundColor: isCurrentMonth ? 'background.paper' : 'action.hover',
+                    border: isToday ? '2px solid #3b82f6' : '1px solid #e2e8f0',
+                    borderRadius: 2,
+                    backgroundColor: isToday ? '#eff6ff' : isCurrentMonth ? '#ffffff' : '#f8fafc',
+                    transition: 'all 0.2s ease-in-out',
                     '&:hover': {
-                      backgroundColor: 'action.selected'
+                      backgroundColor: isCurrentMonth ? '#f8fafc' : '#f1f5f9',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      transform: 'translateY(-1px)',
                     }
                   }}
+                  elevation={0}
                   onClick={() => handleDateClick(date.getDate(), date.getMonth())}
                 >
                   <Typography 
-                    variant="body2" 
-                    fontWeight={isToday ? 'bold' : 'normal'}
-                    color={isCurrentMonth ? 'text.primary' : 'text.secondary'}
+                    variant="body1" 
+                    fontWeight={isToday ? 700 : 600}
+                    sx={{
+                      mb: 1,
+                      color: isToday ? '#1e40af' : isCurrentMonth ? '#374151' : '#9ca3af',
+                      fontSize: '0.875rem',
+                    }}
                   >
                     {date.getDate()}
                   </Typography>
-                  <Box sx={{ mt: 1 }}>
+                  <Box>
                     {dayJobs.map((job, jobIndex) => (
                       <Chip
                         key={jobIndex}
-                        label={`${job.type.substring(0, 4)}`}
+                        label={job.type.length > 6 ? job.type.substring(0, 6) + '...' : job.type}
                         size="small"
                         color={getPriorityColor(job.priority)}
                         sx={{ 
                           mb: 0.5, 
                           mr: 0.5, 
-                          fontSize: '0.65rem',
-                          height: '20px',
+                          fontSize: '0.6rem',
+                          height: '18px',
                           display: 'block',
-                          width: 'fit-content'
+                          width: 'fit-content',
+                          '& .MuiChip-label': {
+                            px: 0.75,
+                          },
                         }}
                       />
                     ))}
                     {dayJobs.length > 4 && (
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          color: '#6b7280',
+                          fontSize: '0.65rem',
+                          fontWeight: 500,
+                          display: 'block',
+                          mt: 0.5,
+                        }}
+                      >
                         +{dayJobs.length - 4} more
                       </Typography>
                     )}
@@ -279,9 +344,34 @@ const CalendarPage: React.FC = () => {
 
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">Maintenance Calendar</Typography>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Header Section */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box>
+          <Typography 
+            variant="h3" 
+            sx={{ 
+              fontWeight: 800, 
+              color: '#0f172a',
+              mb: 1,
+              fontSize: { xs: '2rem', sm: '2.5rem' },
+              letterSpacing: '-0.025em',
+            }}
+          >
+            Maintenance Calendar
+          </Typography>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              color: '#64748b',
+              fontWeight: 400,
+              fontSize: '1.125rem',
+            }}
+          >
+            Schedule and track maintenance activities across your fleet
+          </Typography>
+        </Box>
+        
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           {/* View Toggle */}
           <ToggleButtonGroup
@@ -289,13 +379,33 @@ const CalendarPage: React.FC = () => {
             exclusive
             onChange={(_, newView) => newView && setViewType(newView)}
             size="small"
+            sx={{
+              '& .MuiToggleButton-root': {
+                border: '1px solid #e2e8f0',
+                borderRadius: 1.5,
+                px: 2,
+                py: 1,
+                color: '#64748b',
+                fontWeight: 500,
+                '&.Mui-selected': {
+                  backgroundColor: '#3b82f6',
+                  color: '#ffffff',
+                  '&:hover': {
+                    backgroundColor: '#2563eb',
+                  },
+                },
+                '&:hover': {
+                  backgroundColor: '#f8fafc',
+                },
+              },
+            }}
           >
             <ToggleButton value="month">
-              <CalendarViewMonth sx={{ mr: 1 }} />
+              <CalendarViewMonth sx={{ mr: 1, fontSize: 18 }} />
               Monthly
             </ToggleButton>
             <ToggleButton value="week">
-              <CalendarViewWeek sx={{ mr: 1 }} />
+              <CalendarViewWeek sx={{ mr: 1, fontSize: 18 }} />
               Weekly
             </ToggleButton>
           </ToggleButtonGroup>
@@ -304,57 +414,129 @@ const CalendarPage: React.FC = () => {
             variant="outlined"
             startIcon={<Today />}
             onClick={goToToday}
+            sx={{
+              borderColor: '#e2e8f0',
+              color: '#475569',
+              fontWeight: 500,
+              px: 3,
+              py: 1,
+              borderRadius: 1.5,
+              '&:hover': {
+                backgroundColor: '#f8fafc',
+                borderColor: '#cbd5e1',
+              },
+            }}
           >
             Today
           </Button>
         </Box>
       </Box>
 
-      <Card>
-        <CardContent>
+      <Card sx={{ 
+        flex: 1, 
+        display: 'flex', 
+        flexDirection: 'column',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        borderRadius: 2,
+        height: '100%',
+        overflow: 'auto',
+        '&::-webkit-scrollbar': {
+          width: '6px',
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: '#f1f5f9',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#cbd5e1',
+          borderRadius: '3px',
+          '&:hover': {
+            backgroundColor: '#94a3b8',
+          },
+        },
+      }}>
+        <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
           {/* Calendar Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <IconButton onClick={() => navigate(-1)}>
+            <IconButton 
+              onClick={() => navigate(-1)} 
+              size="large"
+              sx={{
+                color: '#64748b',
+                '&:hover': {
+                  backgroundColor: '#f1f5f9',
+                  color: '#475569',
+                },
+              }}
+            >
               <ChevronLeft />
             </IconButton>
-            <Typography variant="h5">
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700,
+                color: '#0f172a',
+                fontSize: '1.5rem',
+                letterSpacing: '-0.025em',
+              }}
+            >
               {viewType === 'month' 
                 ? `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`
                 : `Week of ${getWeekStart(currentDate).toLocaleDateString()}`
               }
             </Typography>
-            <IconButton onClick={() => navigate(1)}>
+            <IconButton 
+              onClick={() => navigate(1)} 
+              size="large"
+              sx={{
+                color: '#64748b',
+                '&:hover': {
+                  backgroundColor: '#f1f5f9',
+                  color: '#475569',
+                },
+              }}
+            >
               <ChevronRight />
             </IconButton>
           </Box>
 
           {/* Calendar Content */}
-          {viewType === 'month' ? (
-            <>
-              {/* Day Names Header */}
-              <Box sx={{ display: 'flex', mb: 1 }}>
-                {dayNames.map((dayName) => (
-                  <Box key={dayName} sx={{ width: '14.28%', p: 0.5 }}>
-                    <Typography
-                      variant="subtitle2"
-                      align="center"
-                      sx={{ fontWeight: 'bold', py: 1 }}
-                    >
-                      {dayName}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {viewType === 'month' ? (
+              <>
+                {/* Day Names Header */}
+                <Box sx={{ display: 'flex', mb: 2 }}>
+                  {dayNames.map((dayName) => (
+                    <Box key={dayName} sx={{ width: '14.28%', p: 1 }}>
+                      <Typography
+                        variant="subtitle2"
+                        align="center"
+                        sx={{ 
+                          fontWeight: 600, 
+                          color: '#64748b',
+                          fontSize: '0.75rem',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
+                        }}
+                      >
+                        {dayName}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
 
-              {/* Monthly Calendar Grid */}
-              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                {renderCalendarDays()}
+                {/* Monthly Calendar Grid */}
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', flex: 1 }}>
+                  {renderCalendarDays()}
+                </Box>
+              </>
+            ) : (
+              /* Weekly Calendar */
+              <Box sx={{ flex: 1 }}>
+                {renderWeeklyCalendar()}
               </Box>
-            </>
-          ) : (
-            /* Weekly Calendar */
-            renderWeeklyCalendar()
-          )}
+            )}
+          </Box>
         </CardContent>
       </Card>
 
@@ -364,63 +546,262 @@ const CalendarPage: React.FC = () => {
         onClose={() => setDialogOpen(false)}
         maxWidth="md"
         fullWidth
+        sx={{
+          '& .MuiDialog-paper': {
+            borderRadius: 3,
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            border: '1px solid #e2e8f0',
+            overflow: 'hidden',
+          },
+        }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ 
+          p: 4, 
+          pb: 2,
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #f1f5f9',
+        }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Build sx={{ mr: 1 }} />
-            Scheduled Jobs for {selectedDate?.toLocaleDateString()}
+            <Box 
+              sx={{ 
+                width: 48, 
+                height: 48, 
+                backgroundColor: '#eff6ff',
+                borderRadius: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 3,
+              }}
+            >
+              <Build sx={{ color: '#3b82f6', fontSize: 24 }} />
+            </Box>
+            <Box>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  fontWeight: 700, 
+                  color: '#0f172a',
+                  fontSize: '1.5rem',
+                  lineHeight: 1.2,
+                  mb: 0.5,
+                }}
+              >
+                Scheduled Jobs
+              </Typography>
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  color: '#64748b',
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                }}
+              >
+                {selectedDate?.toLocaleDateString('en-US', { 
+                  weekday: 'long',
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </Typography>
+            </Box>
           </Box>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ 
+          p: 4,
+          backgroundColor: '#f8fafc',
+          maxHeight: '500px',
+          overflow: 'auto',
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f1f5f9',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#cbd5e1',
+            borderRadius: '3px',
+            '&:hover': {
+              backgroundColor: '#94a3b8',
+            },
+          },
+        }}>
           {selectedJobs.length === 0 ? (
-            <Typography color="text.secondary">
-              No maintenance jobs scheduled for this date.
-            </Typography>
+            <Box sx={{ 
+              textAlign: 'center', 
+              py: 6,
+              backgroundColor: '#ffffff',
+              borderRadius: 3,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Box 
+                sx={{ 
+                  width: 64, 
+                  height: 64, 
+                  backgroundColor: '#f1f5f9',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  mb: 3,
+                }}
+              >
+                <Build sx={{ color: '#9ca3af', fontSize: 32 }} />
+              </Box>
+              <Typography 
+                variant="h6"
+                sx={{ 
+                  color: '#374151',
+                  fontSize: '1.125rem',
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                No Jobs Scheduled
+              </Typography>
+              <Typography 
+                variant="body2"
+                sx={{ 
+                  color: '#6b7280',
+                  fontSize: '0.875rem',
+                }}
+              >
+                No maintenance jobs are scheduled for this date.
+              </Typography>
+            </Box>
           ) : (
-            <List>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {selectedJobs.map((job) => (
-                <ListItem key={job.id} divider>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body1" fontWeight="medium">
-                          {job.type} - {getComponentName(job.componentId)}
+                <Paper
+                  key={job.id}
+                  sx={{
+                    p: 4,
+                    borderRadius: 3,
+                    border: '1px solid #e2e8f0',
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      backgroundColor: '#ffffff',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      transform: 'translateY(-1px)',
+                    },
+                  }}
+                  elevation={0}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 3 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ 
+                          fontWeight: 700, 
+                          mb: 2, 
+                          color: '#0f172a',
+                          fontSize: '1.125rem',
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {job.type} - {getComponentName(job.componentId)}
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 3 }}>
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontSize: '0.875rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          <strong>Ship:</strong> {getShipName(job.shipId)}
                         </Typography>
-                        <Chip
-                          label={job.priority}
-                          color={getPriorityColor(job.priority)}
-                          size="small"
-                        />
-                        <Chip
-                          label={job.status}
-                          size="small"
-                          variant="outlined"
-                        />
+                        <Typography 
+                          variant="body2" 
+                          sx={{ 
+                            color: '#64748b',
+                            fontSize: '0.875rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          <strong>Engineer:</strong> #{job.assignedEngineerId}
+                        </Typography>
                       </Box>
-                    }
-                    secondary={
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
-                          Ship: {getShipName(job.shipId)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Assigned Engineer: Engineer #{job.assignedEngineerId}
-                        </Typography>
-                        {job.description && (
-                          <Typography variant="body2" color="text.secondary">
-                            Description: {job.description}
+                      {job.description && (
+                        <Box sx={{ 
+                          p: 3,
+                          backgroundColor: '#f8fafc',
+                          borderRadius: 2,
+                          border: '1px solid #f1f5f9',
+                        }}>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              color: '#475569',
+                              fontSize: '0.875rem',
+                              lineHeight: 1.6,
+                            }}
+                          >
+                            {job.description}
                           </Typography>
-                        )}
-                      </Box>
-                    }
-                  />
-                </ListItem>
+                        </Box>
+                      )}
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, ml: 3 }}>
+                      <Chip
+                        label={job.priority}
+                        color={getPriorityColor(job.priority)}
+                        sx={{ 
+                          fontWeight: 600,
+                          borderRadius: 2,
+                          fontSize: '0.75rem',
+                          height: '28px',
+                        }}
+                      />
+                      <Chip
+                        label={job.status}
+                        variant="outlined"
+                        sx={{ 
+                          fontWeight: 600,
+                          borderRadius: 2,
+                          fontSize: '0.75rem',
+                          height: '28px',
+                          borderColor: '#d1d5db',
+                          color: '#374151',
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                </Paper>
               ))}
-            </List>
+            </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Close</Button>
+        <DialogActions sx={{ 
+          p: 4, 
+          pt: 3,
+          backgroundColor: '#ffffff',
+          borderTop: '1px solid #f1f5f9',
+        }}>
+          <Button 
+            onClick={() => setDialogOpen(false)}
+            variant="contained"
+            sx={{
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              fontWeight: 600,
+              px: 4,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+              '&:hover': {
+                backgroundColor: '#2563eb',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

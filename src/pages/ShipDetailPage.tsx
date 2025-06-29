@@ -183,206 +183,634 @@ const ShipDetailPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={() => navigate('/ships')} sx={{ mr: 2 }}>
-          <ArrowBack />
-        </IconButton>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {ship.name}
-        </Typography>
-        <Button
-          variant="outlined"
-          startIcon={<Edit />}
-          onClick={() => navigate(`/ships/${ship.id}/edit`)}
-        >
-          Edit Ship
-        </Button>
+    <Box sx={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+      {/* Professional Header */}
+      <Box sx={{ 
+        backgroundColor: '#ffffff', 
+        borderBottom: '1px solid #e2e8f0',
+        p: 3,
+        mb: 0,
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton 
+              onClick={() => navigate('/ships')} 
+              sx={{ 
+                backgroundColor: '#f8fafc',
+                '&:hover': { backgroundColor: '#f1f5f9' },
+                border: '1px solid #e2e8f0',
+              }}
+            >
+              <ArrowBack sx={{ color: '#64748b' }} />
+            </IconButton>
+            <Box>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontSize: '2rem',
+                  fontWeight: 700,
+                  color: '#0f172a',
+                  lineHeight: 1.2,
+                  mb: 0.5,
+                }}
+              >
+                {ship.name}
+              </Typography>
+              <Typography 
+                variant="subtitle1" 
+                sx={{ 
+                  color: '#64748b',
+                  fontSize: '1rem',
+                }}
+              >
+                IMO: {ship.imo} • Flag: {ship.flag}
+              </Typography>
+            </Box>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<Edit />}
+            onClick={() => navigate(`/ships/${ship.id}/edit`)}
+            sx={{
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              px: 3,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              fontWeight: 600,
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+              '&:hover': {
+                backgroundColor: '#2563eb',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            Edit Ship
+          </Button>
+        </Box>
       </Box>
 
-      {/* Ship Information */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Ship Information
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                IMO Number
-              </Typography>
-              <Typography variant="body1">{ship.imo}</Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                Flag
-              </Typography>
-              <Typography variant="body1">{ship.flag}</Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle2" color="text.secondary">
-                Status
-              </Typography>
-              <Chip 
-                label={ship.status} 
-                color={getStatusColor(ship.status)} 
-                size="small" 
-              />
-            </Box>
-            {ship.yearBuilt && (
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Year Built
-                </Typography>
-                <Typography variant="body1">{ship.yearBuilt}</Typography>
-              </Box>
-            )}
-            {ship.owner && (
-              <Box>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Owner
-                </Typography>
-                <Typography variant="body1">{ship.owner}</Typography>
-              </Box>
-            )}
-          </Box>
-          {ship.description && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle2" color="text.secondary">
-                Description
-              </Typography>
-              <Typography variant="body1">{ship.description}</Typography>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+      {/* Main Content */}
+      <Box sx={{ 
+        p: 3, 
+        height: 'calc(100% - 120px)',
+        overflow: 'auto',
+        backgroundColor: '#f8fafc',
+        '&::-webkit-scrollbar': {
+          width: '6px',
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: '#f1f5f9',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#cbd5e1',
+          borderRadius: '3px',
+          '&:hover': {
+            backgroundColor: '#94a3b8',
+          },
+        },
+      }}>
 
-      {/* Components Section */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">
-              Components ({components.length})
-            </Typography>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={() => handleOpenComponentDialog()}
+        {/* Ship Information */}
+        <Card sx={{ 
+          mb: 3,
+          backgroundColor: '#ffffff',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e2e8f0',
+          borderRadius: 3,
+        }}>
+          <CardContent sx={{ p: 4 }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom
+              sx={{
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                color: '#0f172a',
+                mb: 3,
+              }}
             >
-              Add Component
-            </Button>
-          </Box>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Serial Number</TableCell>
-                  <TableCell>Install Date</TableCell>
-                  <TableCell>Last Maintenance</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell align="center">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {components.map((component) => (
-                  <TableRow key={component.id} hover>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="medium">
-                        {component.name}
-                      </Typography>
+              Ship Information
+            </Typography>
+            <Box sx={{ 
+              display: 'grid', 
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr' },
+              gap: 4,
+            }}>
+              <Box>
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    color: '#64748b',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    mb: 1,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  IMO Number
+                </Typography>
+                <Typography 
+                  variant="body1"
+                  sx={{
+                    color: '#1e293b',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  {ship.imo}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    color: '#64748b',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    mb: 1,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Flag
+                </Typography>
+                <Typography 
+                  variant="body1"
+                  sx={{
+                    color: '#1e293b',
+                    fontSize: '1rem',
+                    fontWeight: 500,
+                  }}
+                >
+                  {ship.flag}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    color: '#64748b',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    mb: 1,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Status
+                </Typography>
+                <Chip 
+                  label={ship.status} 
+                  color={getStatusColor(ship.status)} 
+                  sx={{
+                    fontWeight: 600,
+                    borderRadius: 2,
+                  }}
+                />
+              </Box>
+              {ship.yearBuilt && (
+                <Box>
+                  <Typography 
+                    variant="subtitle2" 
+                    sx={{ 
+                      color: '#64748b',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      mb: 1,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    Year Built
+                  </Typography>
+                  <Typography 
+                    variant="body1"
+                    sx={{
+                      color: '#1e293b',
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {ship.yearBuilt}
+                  </Typography>
+                </Box>
+              )}
+              {ship.owner && (
+                <Box>
+                  <Typography 
+                    variant="subtitle2" 
+                    sx={{ 
+                      color: '#64748b',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      mb: 1,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    Owner
+                  </Typography>
+                  <Typography 
+                    variant="body1"
+                    sx={{
+                      color: '#1e293b',
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {ship.owner}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+            {ship.description && (
+              <Box sx={{ mt: 4, pt: 4, borderTop: '1px solid #e2e8f0' }}>
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    color: '#64748b',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    mb: 2,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Description
+                </Typography>
+                <Typography 
+                  variant="body1"
+                  sx={{
+                    color: '#475569',
+                    fontSize: '1rem',
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {ship.description}
+                </Typography>
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Components Section */}
+        <Card sx={{ 
+          mb: 3,
+          backgroundColor: '#ffffff',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e2e8f0',
+          borderRadius: 3,
+        }}>
+          <CardContent sx={{ p: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography 
+                variant="h6"
+                sx={{
+                  fontSize: '1.25rem',
+                  fontWeight: 700,
+                  color: '#0f172a',
+                }}
+              >
+                Components ({components.length})
+              </Typography>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => handleOpenComponentDialog()}
+                sx={{
+                  backgroundColor: '#3b82f6',
+                  color: 'white',
+                  px: 3,
+                  py: 1.5,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                  '&:hover': {
+                    backgroundColor: '#2563eb',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  },
+                }}
+              >
+                Add Component
+              </Button>
+            </Box>
+            <TableContainer sx={{ 
+              borderRadius: 2,
+              border: '1px solid #e2e8f0',
+              backgroundColor: '#ffffff',
+            }}>
+              <Table>
+                <TableHead sx={{ backgroundColor: '#f8fafc' }}>
+                  <TableRow>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Name
                     </TableCell>
-                    <TableCell>{component.serialNumber}</TableCell>
-                    <TableCell>{new Date(component.installDate).toLocaleDateString()}</TableCell>
-                    <TableCell>{new Date(component.lastMaintenanceDate).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={component.status}
-                        color={getStatusColor(component.status)}
-                        size="small"
-                      />
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Serial Number
                     </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        onClick={() => handleOpenComponentDialog(component)}
-                        color="primary"
-                        size="small"
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(component)}
-                        color="error"
-                        size="small"
-                      >
-                        <Delete />
-                      </IconButton>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Install Date
+                    </TableCell>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Last Maintenance
+                    </TableCell>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Status
+                    </TableCell>
+                    <TableCell 
+                      align="center"
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: '#374151',
+                        fontSize: '0.875rem',
+                        borderBottom: '1px solid #e2e8f0',
+                      }}
+                    >
+                      Actions
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </Card>
-
-      {/* Maintenance Jobs Section */}
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Maintenance Jobs ({jobs.length})
-          </Typography>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Component</TableCell>
-                  <TableCell>Type</TableCell>
-                  <TableCell>Priority</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Scheduled Date</TableCell>
-                  <TableCell align="center">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {jobs.map((job) => {
-                  const component = components.find(c => c.id === job.componentId);
-                  return (
-                    <TableRow key={job.id} hover>
-                      <TableCell>{component?.name || 'Unknown'}</TableCell>
-                      <TableCell>{job.type}</TableCell>
-                      <TableCell>
+                </TableHead>
+                <TableBody>
+                  {components.map((component) => (
+                    <TableRow 
+                      key={component.id} 
+                      hover
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: '#f8fafc',
+                        },
+                        borderBottom: '1px solid #f1f5f9',
+                      }}
+                    >
+                      <TableCell sx={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <Typography 
+                          variant="body2" 
+                          sx={{
+                            fontWeight: 600,
+                            color: '#1e293b',
+                            fontSize: '0.875rem',
+                          }}
+                        >
+                          {component.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={{ 
+                        color: '#64748b',
+                        fontSize: '0.875rem',
+                        borderBottom: '1px solid #f1f5f9',
+                      }}>
+                        {component.serialNumber}
+                      </TableCell>
+                      <TableCell sx={{ 
+                        color: '#64748b',
+                        fontSize: '0.875rem',
+                        borderBottom: '1px solid #f1f5f9',
+                      }}>
+                        {new Date(component.installDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell sx={{ 
+                        color: '#64748b',
+                        fontSize: '0.875rem',
+                        borderBottom: '1px solid #f1f5f9',
+                      }}>
+                        {new Date(component.lastMaintenanceDate).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid #f1f5f9' }}>
                         <Chip
-                          label={job.priority}
-                          color={getPriorityColor(job.priority)}
-                          size="small"
+                          label={component.status}
+                          color={getStatusColor(component.status)}
+                          sx={{
+                            fontWeight: 600,
+                            borderRadius: 2,
+                            fontSize: '0.75rem',
+                          }}
                         />
                       </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={job.status}
-                          color={getJobStatusColor(job.status)}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>{new Date(job.scheduledDate).toLocaleDateString()}</TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ borderBottom: '1px solid #f1f5f9' }}>
                         <IconButton
-                          onClick={() => navigate(`/jobs/${job.id}`)}
-                          color="primary"
+                          onClick={() => handleOpenComponentDialog(component)}
+                          sx={{
+                            color: '#3b82f6',
+                            '&:hover': {
+                              backgroundColor: '#eff6ff',
+                            },
+                            mr: 1,
+                          }}
                           size="small"
                         >
-                          <Build />
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteClick(component)}
+                          sx={{
+                            color: '#dc2626',
+                            '&:hover': {
+                              backgroundColor: '#fef2f2',
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Delete />
                         </IconButton>
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </Card>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+        {/* Maintenance Jobs Section */}
+        <Card sx={{ 
+          backgroundColor: '#ffffff',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e2e8f0',
+          borderRadius: 3,
+        }}>
+          <CardContent sx={{ p: 4 }}>
+            <Typography 
+              variant="h6" 
+              gutterBottom
+              sx={{
+                fontSize: '1.25rem',
+                fontWeight: 700,
+                color: '#0f172a',
+                mb: 3,
+              }}
+            >
+              Maintenance Jobs ({jobs.length})
+            </Typography>
+            <TableContainer sx={{ 
+              borderRadius: 2,
+              border: '1px solid #e2e8f0',
+              backgroundColor: '#ffffff',
+            }}>
+              <Table>
+                <TableHead sx={{ backgroundColor: '#f8fafc' }}>
+                  <TableRow>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Component
+                    </TableCell>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Type
+                    </TableCell>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Priority
+                    </TableCell>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Status
+                    </TableCell>
+                    <TableCell sx={{ 
+                      fontWeight: 600, 
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      borderBottom: '1px solid #e2e8f0',
+                    }}>
+                      Scheduled Date
+                    </TableCell>
+                    <TableCell 
+                      align="center"
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: '#374151',
+                        fontSize: '0.875rem',
+                        borderBottom: '1px solid #e2e8f0',
+                      }}
+                    >
+                      Actions
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {jobs.map((job) => {
+                    const component = components.find(c => c.id === job.componentId);
+                    return (
+                      <TableRow 
+                        key={job.id} 
+                        hover
+                        sx={{
+                          '&:hover': {
+                            backgroundColor: '#f8fafc',
+                          },
+                          borderBottom: '1px solid #f1f5f9',
+                        }}
+                      >
+                        <TableCell sx={{ 
+                          color: '#1e293b',
+                          fontSize: '0.875rem',
+                          fontWeight: 500,
+                          borderBottom: '1px solid #f1f5f9',
+                        }}>
+                          {component?.name || 'Unknown'}
+                        </TableCell>
+                        <TableCell sx={{ 
+                          color: '#64748b',
+                          fontSize: '0.875rem',
+                          borderBottom: '1px solid #f1f5f9',
+                        }}>
+                          {job.type}
+                        </TableCell>
+                        <TableCell sx={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <Chip
+                            label={job.priority}
+                            color={getPriorityColor(job.priority)}
+                            sx={{
+                              fontWeight: 600,
+                              borderRadius: 2,
+                              fontSize: '0.75rem',
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <Chip
+                            label={job.status}
+                            color={getJobStatusColor(job.status)}
+                            sx={{
+                              fontWeight: 600,
+                              borderRadius: 2,
+                              fontSize: '0.75rem',
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ 
+                          color: '#64748b',
+                          fontSize: '0.875rem',
+                          borderBottom: '1px solid #f1f5f9',
+                        }}>
+                          {new Date(job.scheduledDate).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell align="center" sx={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <IconButton
+                            onClick={() => navigate(`/jobs/${job.id}`)}
+                            sx={{
+                              color: '#3b82f6',
+                              '&:hover': {
+                                backgroundColor: '#eff6ff',
+                              },
+                            }}
+                            size="small"
+                          >
+                            <Build />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+      </Box>
 
       {/* Add/Edit Component Dialog */}
       <Dialog open={openComponentDialog} onClose={handleCloseComponentDialog} maxWidth="md" fullWidth>

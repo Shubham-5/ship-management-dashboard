@@ -26,6 +26,7 @@ import {
   Build,
   CalendarToday,
   Notifications,
+  Assessment,
   Logout
 } from '@mui/icons-material';
 import { useAuthStore } from '../store/authStore';
@@ -90,6 +91,7 @@ const Layout: React.FC = () => {
     { text: 'Ships', icon: <DirectionsBoat />, path: '/ships' },
     { text: 'Maintenance Jobs', icon: <Build />, path: '/jobs' },
     { text: 'Calendar', icon: <CalendarToday />, path: '/calendar' },
+    { text: 'Reports', icon: <Assessment />, path: '/reports' },
     { text: 'Notifications', icon: <Notifications />, path: '/notifications' },
   ];
 

@@ -9,6 +9,7 @@ import ShipsPage from './pages/ShipsPage';
 import ShipDetailPage from './pages/ShipDetailPage';
 import JobsPage from './pages/JobsPage';
 import CalendarPage from './pages/CalendarPage';
+import ReportsPage from './pages/ReportsPage';
 import NotificationsPage from './pages/NotificationsPage';
 import Layout from './components/Layout';
 import './App.css';
@@ -51,6 +52,7 @@ function App() {
               <Route path="ships/:id" element={<ShipDetailPage />} />
               <Route path="jobs" element={<JobsPage />} />
               <Route path="calendar" element={<CalendarPage />} />
+              <Route path="reports" element={<ReportsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
             </Route>
           ) : (

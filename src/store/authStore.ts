@@ -18,7 +18,6 @@ interface AuthState {
   initializeAuth: () => void;
 }
 
-// Initialize default users
 const initializeUsers = () => {
   const existingUsers = getFromStorage(LOCAL_STORAGE_KEYS.USERS);
   if (!existingUsers) {

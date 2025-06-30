@@ -18,7 +18,6 @@ interface NotificationState {
   notifications: Notification[];
   unreadCount: number;
   
-  // Actions
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
@@ -30,7 +29,6 @@ interface NotificationState {
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-// Helper functions for creating specific notification types
 export const createJobNotification = (
   type: 'job_created' | 'job_updated' | 'job_completed',
   jobType: string,
@@ -77,7 +75,6 @@ export const createMaintenanceOverdueNotification = (
   relatedEntityType: 'component'
 });
 
-// Initialize sample notifications
 const initializeDefaultNotifications = () => {
   const existingNotifications = getFromStorage(LOCAL_STORAGE_KEYS.NOTIFICATIONS);
   if (!existingNotifications) {

@@ -65,7 +65,6 @@ interface ShipState {
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
-// Initialize default data
 const initializeDefaultData = () => {
   const existingShips = getFromStorage(LOCAL_STORAGE_KEYS.SHIPS);
   const existingComponents = getFromStorage(LOCAL_STORAGE_KEYS.COMPONENTS);
@@ -111,7 +110,6 @@ export const useShipStore = create<ShipState>((set, get) => ({
     set({ ships });
     saveToStorage(LOCAL_STORAGE_KEYS.SHIPS, ships);
     
-    // Create notification for new ship
     try {
       const notificationStore = useNotificationStore.getState();
       notificationStore.addNotification({
@@ -135,7 +133,6 @@ export const useShipStore = create<ShipState>((set, get) => ({
     set({ ships });
     saveToStorage(LOCAL_STORAGE_KEYS.SHIPS, ships);
     
-    // Create notification for ship status changes
     try {
       if (oldShip && oldShip.status !== updates.status && updates.status) {
         const notificationStore = useNotificationStore.getState();
@@ -202,13 +199,11 @@ export const useShipStore = create<ShipState>((set, get) => ({
     set({ jobs });
     saveToStorage(LOCAL_STORAGE_KEYS.JOBS, jobs);
     
-    // Create notification for new job
     try {
       const ship = get().ships.find(s => s.id === jobData.shipId);
       const component = get().components.find(c => c.id === jobData.componentId);
       
       if (ship && component) {
-        // Access notification store and add notification
         const notificationStore = useNotificationStore.getState();
         const notification = createJobNotification(
           'job_created',
@@ -233,7 +228,6 @@ export const useShipStore = create<ShipState>((set, get) => ({
     set({ jobs });
     saveToStorage(LOCAL_STORAGE_KEYS.JOBS, jobs);
     
-    // Create notification for job update
     try {
       if (oldJob && (oldJob.status !== updates.status)) {
         const ship = get().ships.find(s => s.id === oldJob.shipId);
@@ -282,7 +276,6 @@ export const useShipStore = create<ShipState>((set, get) => ({
   getJobsByStatus: (status) => 
     get().jobs.filter(job => job.status === status),
 
-  // Initialize default data
   initializeData: () => {
     initializeDefaultData();
     const ships = getFromStorage(LOCAL_STORAGE_KEYS.SHIPS) || [];
@@ -291,7 +284,6 @@ export const useShipStore = create<ShipState>((set, get) => ({
     set({ ships, components, jobs });
   },
 
-  // Check for overdue jobs and create notifications
   checkOverdueJobs: () => {
     try {
       const now = new Date();
@@ -308,7 +300,6 @@ export const useShipStore = create<ShipState>((set, get) => ({
         const component = get().components.find(c => c.id === job.componentId);
         
         if (ship && component) {
-          // Check if we already have a notification for this overdue job
           const existingNotification = notificationStore.notifications.find(
             n => n.relatedEntityId === job.id && n.type === 'maintenance_overdue'
           );

@@ -1,4 +1,3 @@
-// Local storage utilities
 export const LOCAL_STORAGE_KEYS = {
   USERS: 'smd_users',
   SHIPS: 'smd_ships',

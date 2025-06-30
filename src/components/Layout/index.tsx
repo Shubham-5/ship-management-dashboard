@@ -29,9 +29,10 @@ import {
   Assessment,
   Logout
 } from '@mui/icons-material';
-import { useAuthStore } from '../store/authStore';
-import { useNotificationStore } from '../store/notificationStore';
-import { useShipStore } from '../store/shipStore';
+import { useAuthStore } from '../../store/authStore';
+import { useNotificationStore } from '../../store/notificationStore';
+import { useShipStore } from '../../store/shipStore';
+import type { MenuItemType } from './types';
 
 const drawerWidth = 240;
 
@@ -73,7 +74,7 @@ const Layout: React.FC = () => {
     handleProfileMenuClose();
   };
 
-  const getMenuIcon = (item: typeof menuItems[0]) => {
+  const getMenuIcon = (item: MenuItemType) => {
     if (item.path === '/notifications') {
       return (
         <Badge badgeContent={unreadCount} color="error">
@@ -84,7 +85,7 @@ const Layout: React.FC = () => {
     return item.icon;
   };
 
-  const menuItems = [
+  const menuItems: MenuItemType[] = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
     { text: 'Ships', icon: <DirectionsBoat />, path: '/ships' },
     { text: 'Maintenance Jobs', icon: <Build />, path: '/jobs' },
@@ -165,6 +166,7 @@ const Layout: React.FC = () => {
                   paddingY: 2,
                   paddingX: 2,
                   borderRadius: 2,
+                  transition: 'all 0.2s ease-in-out',
                   color: '#cbd5e1',
                   '&:hover': {
                     backgroundColor: '#334155',
@@ -255,7 +257,6 @@ const Layout: React.FC = () => {
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            {/* User Profile */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Box sx={{ display: { xs: 'none', md: 'block' }, textAlign: 'right' }}>
                 <Typography 
@@ -283,6 +284,7 @@ const Layout: React.FC = () => {
                 size="large"
                 edge="end"
                 aria-label="account of current user"
+                aria-controls="profile-menu"
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
                 sx={{ 

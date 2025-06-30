@@ -125,7 +125,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   }
 
   return (
-    <List>
+    <List sx={{overflowY: 'auto', maxHeight: 'calc(90vh - 400px)', pb: 10}}>
       {notifications.map((notification, index) => (
         <React.Fragment key={notification.id}>
           <ListItem

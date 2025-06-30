@@ -58,7 +58,8 @@ const CalendarPage: React.FC = () => {
       display: 'flex', 
       flexDirection: 'column',
       minHeight: 0,
-      overflow: 'hidden',
+      overflow: 'auto',
+      gap: 2,
     }}>
       <CalendarHeader
         viewType={viewType}
@@ -69,9 +70,9 @@ const CalendarPage: React.FC = () => {
       <Card sx={{ 
         flex: 1,
         height: '100%',
-        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'auto'
       }}>
         <CalendarGrid
           jobs={jobs}

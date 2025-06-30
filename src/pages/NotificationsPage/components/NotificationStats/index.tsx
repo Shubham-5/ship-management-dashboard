@@ -37,7 +37,6 @@ const NotificationStats: React.FC<NotificationStatsProps> = ({
       display: 'grid', 
       gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
       gap: 3, 
-      mb: 4 
     }}>
       {stats.map((stat, index) => (
         <Card key={index}>

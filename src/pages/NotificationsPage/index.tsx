@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Badge, CardContent } from '@mui/material';
-import { DoneAll, Clear, Notifications } from '@mui/icons-material';
+import { Box } from '@mui/material';
+import { DoneAll, Clear } from '@mui/icons-material';
 import { PageHeader, Button, Card } from '../../components';
 import { useNotificationStore } from '../../store/notificationStore';
 import NotificationStats from './components/NotificationStats';
@@ -71,28 +71,7 @@ const NotificationsPage: React.FC = () => {
         title="Notifications"
         subtitle="Stay updated with all system alerts and maintenance updates"
         action={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            <Badge 
-              badgeContent={unreadCount} 
-              color="error"
-              sx={{
-                '& .MuiBadge-badge': {
-                  backgroundColor: '#ef4444',
-                  color: '#ffffff',
-                  fontWeight: 600,
-                },
-              }}
-            >
-              <Box sx={{
-                p: 2,
-                borderRadius: 2,
-                backgroundColor: '#eff6ff',
-                color: '#3b82f6',
-              }}>
-                <Notifications sx={{ fontSize: 24 }} />
-              </Box>
-            </Badge>
-            
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{ display: 'flex', gap: 2 }}>
               <Button
                 variant="outlined"
@@ -117,13 +96,13 @@ const NotificationsPage: React.FC = () => {
       />
 
       <Box sx={{ 
-        p: 3, 
+        py: 2, 
         flex: 1,
         overflow: 'auto',
         backgroundColor: '#f8fafc',
         display: 'flex',
         flexDirection: 'column',
-        gap: 3,
+        gap: 2,
       }}>
         <NotificationStats
           totalCount={notifications.length}
@@ -133,7 +112,6 @@ const NotificationsPage: React.FC = () => {
         />
 
         <Card>
-          <CardContent>
             <NotificationTabs
               selectedTab={selectedTab}
               notifications={notifications}
@@ -148,7 +126,6 @@ const NotificationsPage: React.FC = () => {
               onMarkAsRead={markAsRead}
               onDeleteNotification={deleteNotification}
             />
-          </CardContent>
         </Card>
       </Box>
 

@@ -108,7 +108,7 @@ const JobsTable: React.FC<JobsTableProps> = ({
   return (
     <Card
       title={`Maintenance Jobs (${jobs.length})`}
-      sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+      sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' }}
     >
       {jobs.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 6 }}>

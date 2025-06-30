@@ -107,6 +107,7 @@ const JobsPage: React.FC = () => {
       flexDirection: 'column',
       minHeight: 0,
       overflow: 'hidden',
+      gap: 2
     }}>
       <PageHeader
         title="Maintenance Jobs"
@@ -122,21 +123,17 @@ const JobsPage: React.FC = () => {
         }
       />
 
-      <Box sx={{ mb: 3 }}>
         <JobFilters
           filters={filters}
           onFilterChange={handleFilterChange}
           onClearFilters={clearFilters}
         />
-      </Box>
 
-      <Box sx={{ flex: 1, minHeight: 0 }}>
         <JobsTable
           jobs={filteredJobs}
           onEdit={handleOpenDialog}
           onDelete={handleDeleteClick}
         />
-      </Box>
 
       <JobFormDialog
         open={open}

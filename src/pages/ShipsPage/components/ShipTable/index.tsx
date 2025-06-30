@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import { Edit, Delete, Visibility } from '@mui/icons-material';
-import { Card, StatusChip, Table } from '../../../../components';
+import {  StatusChip, Table } from '../../../../components';
 import type { ShipTableProps } from '../../types';
 import type { Ship } from '../../../../store/shipStore';
 
@@ -101,17 +101,12 @@ const ShipTable: React.FC<ShipTableProps> = ({
   ]);
 
   return (
-    <Card sx={{ 
-      flex: 1, 
-      display: 'flex', 
-      flexDirection: 'column'
-    }}>
+  
       <Table
         columns={columns}
         rows={rows}
         stickyHeader
       />
-    </Card>
   );
 };
 

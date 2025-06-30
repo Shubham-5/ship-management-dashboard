@@ -34,7 +34,7 @@ const DashboardPage: React.FC = () => {
   const criticalJobs = jobs.filter(job => job.priority === 'Critical').length;
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
       <PageHeader
         title="Fleet Overview"
         subtitle="Monitor your entire fleet performance and maintenance status"

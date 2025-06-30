@@ -63,7 +63,8 @@ const ShipsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+
       <PageHeader
         title="Fleet Management"
         subtitle="Manage your vessel fleet and operational status"
